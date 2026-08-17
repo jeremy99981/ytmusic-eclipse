@@ -10,4 +10,4 @@ ENV STREAM_MODE=proxy \
     CLIENTS=ios,android,tv,web \
     YTDLP_CACHE=/tmp/ytdlp-cache
 
-CMD ["gunicorn", "app:app", "--bind", "0.0.0.0:${PORT:-10000}", "--workers", "1", "--threads", "8", "--timeout", "180"]
+CMD ["sh", "-c", "exec gunicorn app:app --bind 0.0.0.0:${PORT:-10000} --workers 1 --threads 8 --timeout 180"]
