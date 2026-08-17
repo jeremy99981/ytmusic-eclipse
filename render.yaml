@@ -1,0 +1,11 @@
+services:
+  - type: web_service
+    name: ytmusic-eclipse
+    runtime: docker
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: STREAM_MODE
+        value: proxy
+      - key: CLIENTS
+        value: ios,android,tv,web
