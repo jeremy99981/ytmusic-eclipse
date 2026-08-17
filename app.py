@@ -34,11 +34,12 @@ yt = YTMusic()
 
 STREAM_MODE = os.environ.get("STREAM_MODE", "proxy").lower()
 
-# Player clients we try, most-preferred first. "ios" and "android" are the
-# native-app clients that bypass the web datacenter bot gate. "tv" is a robust
-# fallback that also works.
+# Player clients we try, most-preferred first. "web_music" (YTM's official
+# client) is first: paired with the bgutil PO-Token provider and the EJS
+# challenge solver it returns real audio streams even from datacenter IPs.
+# The native clients fall back when the POT server is unavailable.
 FALLBACK_CLIENTS = os.environ.get(
-    "CLIENTS", "ios,android,tv,web"
+    "CLIENTS", "web_music,web_safari,web,android,ios,tv"
 ).split(",")
 
 CACHE_DIR = os.environ.get("YTDLP_CACHE", "/tmp/ytdlp-cache")
@@ -55,6 +56,9 @@ def _ydl_opts(client):
         "no_warnings": True,
         "format": "bestaudio[protocol^=https]/bestaudio/best",
         "extractor_args": {"youtube": {"player_client": [client]}},
+        # Lets yt-dlp fetch the external JS challenge solver (yt-dlp-ejs) for
+        # solving n-sig on the web client, which the bgutil POT server unblocks.
+        "remote_components": ["ejs:github"],
         "cachedir": CACHE_DIR,
     }
 
